@@ -148,39 +148,18 @@ export default function GardenBuilder() {
     setStep(3);
     setLoadingBlueprint(true);
 
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
+    const response = await fetch("/api/garden", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: "claude-sonnet-4-6",
-        max_tokens: 1000,
-        messages: [{
-          role: "user",
-          content: `Create a Bird Rescue Garden Blueprint for someone who wants to attract and help the ${bird.name}. They live in the ${selectedRegion} region of the US and have a ${yardSize} yard. 
-
-Format your response with these exact sections:
-🌱 TOP 3 NATIVE PLANTS
-List 3 native plants with one sentence each explaining how it helps this bird.
-
-🐛 KEY INSECTS THESE PLANTS ATTRACT
-List 3 insects and why they matter for this bird.
-
-📅 SEASONAL CALENDAR
-One sentence for each season explaining what the garden does for this bird.
-
-⚠️ DANGER AUDIT
-List 2-3 things commonly found in yards that harm this bird and how to fix them.
-
-💚 YOUR IMPACT
-One inspiring paragraph about how many birds this garden could help.
-
-Keep it practical, specific, and encouraging.`
-        }]
-      })
+        bird: bird.name,
+        region: selectedRegion,
+        yardSize: yardSize,
+      }),
     });
 
     const data = await response.json();
-    setBlueprint(data.content[0].text);
+    setBlueprint(data.blueprint);
     setLoadingBlueprint(false);
   };
 
