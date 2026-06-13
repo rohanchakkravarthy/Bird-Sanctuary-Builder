@@ -49,3 +49,6 @@ Keep it practical, specific, and encouraging.`
 
   } catch (error) {
     console.error("API error:", error);
+    return NextResponse.json({ blueprint: "Error: " + error.message });
+  }
+}
