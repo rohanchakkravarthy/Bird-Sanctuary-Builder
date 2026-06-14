@@ -274,23 +274,70 @@ export default function GardenBuilder() {
           </p>
 
           {loadingBlueprint ? (
-            <div style={{ textAlign: "center", padding: "60px" }}>
-              <p style={{ fontSize: "18px" }}>🌱 Building your garden blueprint...</p>
-              <p style={{ color: "#888" }}>This takes about 10 seconds</p>
-            </div>
-          ) : (
-            <div style={{
-              backgroundColor: "#f8fdf8",
-              border: "1.5px solid #2d8a4e",
-              borderRadius: "16px",
-              padding: "32px",
-              whiteSpace: "pre-wrap",
-              lineHeight: "1.8",
-              fontSize: "15px",
-            }}>
-              {blueprint}
-            </div>
-          )}
+  <div style={{ textAlign: "center", padding: "60px" }}>
+    <div style={{ fontSize: "48px", marginBottom: "16px" }}>🌱</div>
+    <p style={{ fontSize: "18px", fontWeight: "500" }}>Building your garden blueprint...</p>
+    <p style={{ color: "#888" }}>Analyzing local plants and wildlife</p>
+    <div style={{ marginTop: "20px", display: "flex", justifyContent: "center", gap: "8px" }}>
+      {["🌿", "🐛", "🌸", "🦋", "🌳"].map((emoji, i) => (
+        <span key={i} style={{ fontSize: "24px", animation: `bounce ${0.5 + i * 0.1}s infinite alternate` }}>{emoji}</span>
+      ))}
+    </div>
+  </div>
+) : (
+  <div>
+    <style>{`
+      @keyframes bounce { from { transform: translateY(0); } to { transform: translateY(-10px); } }
+      @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+      .blueprint-card { animation: fadeIn 0.5s ease forwards; }
+    `}</style>
+
+    {/* Parse and display each section as a card */}
+    {blueprint.split("\n\n").filter(Boolean).map((section, i) => {
+      const lines = section.trim().split("\n").filter(Boolean);
+      const title = lines[0];
+      const content = lines.slice(1);
+
+      const sectionStyles = {
+        "🌱": { bg: "#f0faf0", border: "#2d8a4e", icon: "🌱" },
+        "🐛": { bg: "#fff8f0", border: "#e67e22", icon: "🐛" },
+        "📅": { bg: "#f0f4ff", border: "#3498db", icon: "📅" },
+        "⚠️": { bg: "#fff5f5", border: "#e74c3c", icon: "⚠️" },
+        "💚": { bg: "#f5fff5", border: "#27ae60", icon: "💚" },
+      };
+
+      const matchedKey = Object.keys(sectionStyles).find(k => title?.includes(k));
+      const style = sectionStyles[matchedKey] || { bg: "#f9f9f9", border: "#ccc" };
+
+      return (
+        <div
+          key={i}
+          className="blueprint-card"
+          style={{
+            backgroundColor: style.bg,
+            border: `2px solid ${style.border}`,
+            borderRadius: "16px",
+            padding: "20px 24px",
+            marginBottom: "16px",
+            animationDelay: `${i * 0.1}s`,
+            opacity: 0,
+          }}
+        >
+          <h3 style={{ margin: "0 0 12px", fontSize: "16px", fontWeight: "600", color: style.border }}>
+            {title}
+          </h3>
+          <ul style={{ margin: 0, paddingLeft: "20px" }}>
+            {content.map((line, j) => (
+              <li key={j} style={{ marginBottom: "8px", lineHeight: "1.6", fontSize: "14px" }}>
+                {line.replace(/^[-•*]\s*/, "")}
+              </li>
+            ))}
+          </ul>
+        </div>
+      );
+    })}
+  </div>
+)}
 
           <div style={{ textAlign: "center", marginTop: "24px", display: "flex", gap: "12px", justifyContent: "center" }}>
             <button
