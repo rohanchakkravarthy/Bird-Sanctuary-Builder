@@ -13,7 +13,7 @@ export async function POST(request) {
           "Authorization": `Bearer ${process.env.GROQ_API_KEY}`,
         },
         body: JSON.stringify({
-          model: "llama3-8b-8192",
+          model: "llama-3.3-70b-versatile",
           messages: [{
             role: "user",
             content: `Create a Bird Rescue Garden Blueprint for someone who wants to attract and help the ${bird}. They live in the ${region} region of the US and have a ${yardSize} yard.
