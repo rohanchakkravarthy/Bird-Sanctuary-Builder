@@ -1,223 +1,370 @@
 "use client";
 import { useState } from "react";
-import feederData from "./birdData/birdfeederdata.json";
 
-const regions = [
-  {
-    id: "Northeast",
-    label: "Northeast",
-    emoji: "🌲",
-    color: "from-blue-100 to-cyan-100",
-    border: "border-blue-300",
-    active: "from-blue-200 to-cyan-200 border-blue-500",
-    text: "text-blue-900",
-    states: ["Connecticut", "Maine", "Massachusetts", "New Hampshire", "New Jersey", "New York", "Pennsylvania", "Rhode Island", "Vermont"],
-  },
-  {
-    id: "Southeast",
-    label: "Southeast",
-    emoji: "🌴",
-    color: "from-green-100 to-emerald-100",
-    border: "border-green-300",
-    active: "from-green-200 to-emerald-200 border-green-500",
-    text: "text-green-900",
-    states: ["Alabama", "Arkansas", "Florida", "Georgia", "Kentucky", "Louisiana", "Mississippi", "North Carolina", "South Carolina", "Tennessee", "Virginia", "West Virginia"],
-  },
-  {
-    id: "Midwest",
-    label: "Midwest",
-    emoji: "🌾",
-    color: "from-yellow-100 to-amber-100",
-    border: "border-yellow-300",
-    active: "from-yellow-200 to-amber-200 border-yellow-500",
-    text: "text-yellow-900",
-    states: ["Illinois", "Indiana", "Iowa", "Kansas", "Michigan", "Minnesota", "Missouri", "Nebraska", "North Dakota", "Ohio", "South Dakota", "Wisconsin"],
-  },
-  {
-    id: "Southwest",
-    label: "Southwest",
-    emoji: "🌵",
-    color: "from-orange-100 to-red-100",
-    border: "border-orange-300",
-    active: "from-orange-200 to-red-200 border-orange-500",
-    text: "text-orange-900",
-    states: ["Arizona", "Colorado", "Nevada", "New Mexico", "Oklahoma", "Texas", "Utah"],
-  },
-  {
-    id: "West",
-    label: "West",
-    emoji: "🏔️",
-    color: "from-purple-100 to-violet-100",
-    border: "border-purple-300",
-    active: "from-purple-200 to-violet-200 border-purple-500",
-    text: "text-purple-900",
-    states: ["Alaska", "California", "Hawaii", "Idaho", "Montana", "Oregon", "Washington", "Wyoming"],
-  },
-];
+const regionBirds = {
+  Northeast: [
+    { name: "Black-capped Chickadee", status: "stable", statusColor: "#2d8a4e", statusLabel: "Stable 🟢", fact: "Loves dense shrubs and sunflower seeds" },
+    { name: "American Robin", status: "stable", statusColor: "#2d8a4e", statusLabel: "Stable 🟢", fact: "Needs open lawns for foraging worms" },
+    { name: "Tufted Titmouse", status: "stable", statusColor: "#2d8a4e", statusLabel: "Stable 🟢", fact: "Nests in tree cavities, loves peanuts" },
+    { name: "Wood Thrush", status: "declining", statusColor: "#e6a817", statusLabel: "Declining 🟡", fact: "Needs large forest patches to breed" },
+    { name: "Chimney Swift", status: "threatened", statusColor: "#c0392b", statusLabel: "Threatened 🔴", fact: "Lost 50% of population since 1970" },
+    { name: "Eastern Meadowlark", status: "threatened", statusColor: "#c0392b", statusLabel: "Threatened 🔴", fact: "Grassland loss has devastated numbers" },
+  ],
+  Southeast: [
+    { name: "Northern Cardinal", status: "stable", statusColor: "#2d8a4e", statusLabel: "Stable 🟢", fact: "Loves dense shrubs for nesting" },
+    { name: "Carolina Chickadee", status: "stable", statusColor: "#2d8a4e", statusLabel: "Stable 🟢", fact: "Needs native oaks for insect food" },
+    { name: "Ruby-throated Hummingbird", status: "stable", statusColor: "#2d8a4e", statusLabel: "Stable 🟢", fact: "Needs tubular native flowers for nectar" },
+    { name: "Painted Bunting", status: "declining", statusColor: "#e6a817", statusLabel: "Declining 🟡", fact: "Trapped illegally for its colorful feathers" },
+    { name: "Bachman's Sparrow", status: "threatened", statusColor: "#c0392b", statusLabel: "Threatened 🔴", fact: "Depends on open pine forests" },
+    { name: "Red-cockaded Woodpecker", status: "threatened", statusColor: "#c0392b", statusLabel: "Threatened 🔴", fact: "Needs old-growth longleaf pine" },
+  ],
+  Midwest: [
+    { name: "American Goldfinch", status: "stable", statusColor: "#2d8a4e", statusLabel: "Stable 🟢", fact: "Loves nyjer seed and coneflowers" },
+    { name: "Blue Jay", status: "stable", statusColor: "#2d8a4e", statusLabel: "Stable 🟢", fact: "Plants oak trees by burying acorns" },
+    { name: "Northern Cardinal", status: "stable", statusColor: "#2d8a4e", statusLabel: "Stable 🟢", fact: "Loves dense shrubs for nesting" },
+    { name: "Bobolink", status: "declining", statusColor: "#e6a817", statusLabel: "Declining 🟡", fact: "Grassland loss on migration routes" },
+    { name: "Eastern Meadowlark", status: "threatened", statusColor: "#c0392b", statusLabel: "Threatened 🔴", fact: "Farmland changes have hurt populations" },
+    { name: "Henslow's Sparrow", status: "threatened", statusColor: "#c0392b", statusLabel: "Threatened 🔴", fact: "One of North America's most declining birds" },
+  ],
+  Southwest: [
+    { name: "House Finch", status: "stable", statusColor: "#2d8a4e", statusLabel: "Stable 🟢", fact: "Thrives in suburban gardens" },
+    { name: "Anna's Hummingbird", status: "stable", statusColor: "#2d8a4e", statusLabel: "Stable 🟢", fact: "Needs year-round nectar flowers" },
+    { name: "Curve-billed Thrasher", status: "stable", statusColor: "#2d8a4e", statusLabel: "Stable 🟢", fact: "Loves cactus gardens for nesting" },
+    { name: "Lucifer Hummingbird", status: "declining", statusColor: "#e6a817", statusLabel: "Declining 🟡", fact: "Agave loss threatens its food supply" },
+    { name: "Southwestern Willow Flycatcher", status: "threatened", statusColor: "#c0392b", statusLabel: "Threatened 🔴", fact: "Riparian habitat destruction is critical" },
+    { name: "Cactus Ferruginous Pygmy-Owl", status: "threatened", statusColor: "#c0392b", statusLabel: "Threatened 🔴", fact: "Urban sprawl shrinking its habitat fast" },
+  ],
+  West: [
+    { name: "Chestnut-backed Chickadee", status: "stable", statusColor: "#2d8a4e", statusLabel: "Stable 🟢", fact: "Loves conifer forests and suet feeders" },
+    { name: "Dark-eyed Junco", status: "stable", statusColor: "#2d8a4e", statusLabel: "Stable 🟢", fact: "Ground feeder, loves white millet" },
+    { name: "Steller's Jay", status: "stable", statusColor: "#2d8a4e", statusLabel: "Stable 🟢", fact: "Thrives in mountain pine forests" },
+    { name: "Varied Thrush", status: "declining", statusColor: "#e6a817", statusLabel: "Declining 🟡", fact: "Old growth forest loss hurting numbers" },
+    { name: "Yellow Warbler", status: "declining", statusColor: "#e6a817", statusLabel: "Declining 🟡", fact: "Needs riparian willows and alders" },
+    { name: "Tricolored Blackbird", status: "threatened", statusColor: "#c0392b", statusLabel: "Threatened 🔴", fact: "Colony nesting sites disappearing fast" },
+  ],
+};
 
-export default function Home() {
-  const [chosenRegion, setChosenRegion] = useState("");
-  const [chosenState, setChosenState] = useState("");
+function BirdCard({ bird, photo, onSelect, selected }) {
+  return (
+    <div
+      onClick={() => onSelect(bird)}
+      style={{
+        border: selected ? "3px solid #2d8a4e" : "2px solid #e0e0e0",
+        borderRadius: "16px",
+        overflow: "hidden",
+        cursor: "pointer",
+        transition: "all 0.2s ease",
+        boxShadow: selected ? "0 4px 16px rgba(45,138,78,0.3)" : "0 2px 8px rgba(0,0,0,0.08)",
+        backgroundColor: "white",
+        transform: selected ? "scale(1.03)" : "scale(1)",
+      }}
+    >
+      <div style={{ width: "100%", height: "160px", backgroundColor: "#f0f0f0", overflow: "hidden" }}>
+        {photo ? (
+          <img src={photo} alt={bird.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+        ) : (
+          <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "40px" }}>🐦</div>
+        )}
+      </div>
+      <div style={{ padding: "12px" }}>
+        <div style={{
+          display: "inline-block",
+          backgroundColor: bird.statusColor + "22",
+          color: bird.statusColor,
+          fontSize: "11px",
+          fontWeight: "600",
+          padding: "3px 8px",
+          borderRadius: "20px",
+          marginBottom: "6px",
+        }}>
+          {bird.statusLabel}
+        </div>
+        <h3 style={{ margin: "0 0 4px", fontSize: "14px", fontWeight: "600" }}>{bird.name}</h3>
+        <p style={{ margin: 0, fontSize: "12px", color: "#666" }}>{bird.fact}</p>
+      </div>
+    </div>
+  );
+}
 
-  const region = regions.find((r) => r.id === chosenRegion);
-  const stateData = chosenState ? feederData[chosenState] : null;
+export default function GardenBuilder() {
+  const [step, setStep] = useState(1);
+  const [zipCode, setZipCode] = useState("");
+  const [yardSize, setYardSize] = useState("");
+  const [selectedRegion, setSelectedRegion] = useState("");
+  const [selectedBird, setSelectedBird] = useState(null);
+  const [photos, setPhotos] = useState({});
+  const [loadingPhotos, setLoadingPhotos] = useState(false);
+  const [blueprint, setBlueprint] = useState("");
+  const [loadingBlueprint, setLoadingBlueprint] = useState(false);
+
+  const zipToRegion = (zip) => {
+    const num = parseInt(zip);
+    if (num >= 10000 && num <= 19999) return "Northeast";
+    if (num >= 20000 && num <= 29999) return "Southeast";
+    if (num >= 30000 && num <= 39999) return "Southeast";
+    if (num >= 40000 && num <= 49999) return "Midwest";
+    if (num >= 50000 && num <= 59999) return "Midwest";
+    if (num >= 60000 && num <= 69999) return "Midwest";
+    if (num >= 70000 && num <= 79999) return "Southwest";
+    if (num >= 80000 && num <= 84999) return "Southwest";
+    if (num >= 85000 && num <= 89999) return "Southwest";
+    if (num >= 90000 && num <= 99999) return "West";
+    return "Northeast";
+  };
+
+  const fetchPhotos = async (birds) => {
+    setLoadingPhotos(true);
+    const photoMap = {};
+    for (const bird of birds) {
+      try {
+        const res = await fetch(
+          `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(bird.name)}`
+        );
+        const data = await res.json();
+        if (data.thumbnail?.source) {
+          photoMap[bird.name] = data.thumbnail.source;
+        }
+      } catch (e) {
+        console.log("No photo for", bird.name);
+      }
+    }
+    setPhotos(photoMap);
+    setLoadingPhotos(false);
+  };
+
+  const handleLocationSubmit = async () => {
+    if (!zipCode || !yardSize) return;
+    const region = zipToRegion(zipCode);
+    setSelectedRegion(region);
+    await fetchPhotos(regionBirds[region]);
+    setStep(2);
+  };
+
+  const handleBirdSelect = async (bird) => {
+    setSelectedBird(bird);
+    setStep(3);
+    setLoadingBlueprint(true);
+
+    const response = await fetch("/api/garden", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        bird: bird.name,
+        region: selectedRegion,
+        yardSize: yardSize,
+      }),
+    });
+
+    const data = await response.json();
+    setBlueprint(data.blueprint);
+    setLoadingBlueprint(false);
+  };
 
   return (
-    <main className="min-h-screen">
+    <main style={{ fontFamily: "sans-serif" }}>
 
-      {/* Hero section */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-green-800 via-green-700 to-emerald-600 text-white">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-10 left-10 text-8xl float">🌿</div>
-          <div className="absolute top-20 right-20 text-6xl float" style={{animationDelay: "1s"}}>🐦</div>
-          <div className="absolute bottom-10 left-1/4 text-7xl float" style={{animationDelay: "0.5s"}}>🌸</div>
-          <div className="absolute bottom-20 right-1/3 text-5xl float" style={{animationDelay: "1.5s"}}>🍃</div>
-        </div>
-        <div className="relative max-w-4xl mx-auto px-6 py-20 text-center">
-          <div className="text-7xl mb-6 float">🪺</div>
-          <h1 className="text-5xl font-bold mb-4" style={{fontFamily: "Playfair Display, serif"}}>
-            The Backyard Biome
-          </h1>
-          <p className="text-xl text-green-100 max-w-2xl mx-auto leading-relaxed">
-            Discover the perfect bird feeders and foods to attract and protect
-            the beautiful birds in your region
-          </p>
-          <div className="mt-8 flex justify-center gap-4 text-green-200 text-sm">
-            <span>🌱 Native focused</span>
-            <span>•</span>
-            <span>🐦 Conservation driven</span>
-            <span>•</span>
-            <span>🏡 Backyard friendly</span>
-          </div>
-        </div>
+      {/* Hero */}
+      <div style={{ background: "linear-gradient(135deg, #1a5c2e, #2d8a4e)", color: "white", padding: "60px 20px", textAlign: "center" }}>
+        <div style={{ fontSize: "56px", marginBottom: "12px" }}>🌿</div>
+        <h1 style={{ fontSize: "36px", fontWeight: "700", marginBottom: "8px", fontFamily: "Playfair Display, serif" }}>
+          Bird Rescue Garden Builder
+        </h1>
+        <p style={{ fontSize: "16px", color: "#a7f3d0", maxWidth: "500px", margin: "0 auto" }}>
+          Get a personalized garden plan that attracts and protects local birds
+        </p>
       </div>
 
-      <div className="max-w-5xl mx-auto px-6 py-12">
+      <div style={{ maxWidth: "900px", margin: "0 auto", padding: "40px 20px" }}>
 
-        {/* Region selector */}
-        <div className="text-center mb-10">
-          <h2 className="text-3xl font-semibold text-green-900 mb-2" style={{fontFamily: "Playfair Display, serif"}}>
-            Choose Your Region
-          </h2>
-          <p className="text-gray-500">Select the region of the US you live in</p>
-        </div>
-
-        <div className="flex flex-wrap justify-center gap-4 mb-12">
-          {regions.map((r) => (
-            <button
-              key={r.id}
-              onClick={() => { setChosenRegion(r.id); setChosenState(""); }}
-              className={`card-hover flex flex-col items-center gap-2 px-6 py-4 rounded-2xl border-2 bg-gradient-to-br font-medium transition-all
-                ${chosenRegion === r.id ? r.active + " shadow-lg scale-105" : r.color + " " + r.border}
-                ${r.text}`}
-            >
-              <span className="text-3xl">{r.emoji}</span>
-              <span className="text-sm font-semibold">{r.label}</span>
-            </button>
+        {/* Step indicators */}
+        <div style={{ display: "flex", justifyContent: "center", gap: "12px", marginBottom: "40px" }}>
+          {[1, 2, 3].map((s) => (
+            <div key={s} style={{
+              width: "36px", height: "36px", borderRadius: "50%",
+              backgroundColor: step >= s ? "#2d8a4e" : "#e0e0e0",
+              color: step >= s ? "white" : "#999",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              fontWeight: "600", fontSize: "14px", transition: "all 0.3s ease",
+            }}>
+              {s}
+            </div>
           ))}
         </div>
 
-        {/* State dropdown */}
-        {region && (
-          <div className="fade-in-up text-center mb-12">
-            <div className={`inline-block bg-gradient-to-br ${region.color} border-2 ${region.border} rounded-2xl px-8 py-6 shadow-md`}>
-              <label className={`block text-sm font-semibold ${region.text} mb-3`}>
-                Now select your state
-              </label>
-              <select
-                value={chosenState}
-                onChange={(e) => setChosenState(e.target.value)}
-                className={`bg-white border-2 ${region.border} ${region.text} rounded-xl px-4 py-3 text-sm font-medium cursor-pointer shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2`}
-              >
-                <option value="">-- Pick a state --</option>
-                {region.states.map((s) => (
-                  <option key={s} value={s}>{s}</option>
+        {/* Step 1 */}
+        {step === 1 && (
+          <div style={{ maxWidth: "400px", margin: "0 auto", textAlign: "center" }}>
+            <h2 style={{ fontSize: "24px", fontWeight: "600", marginBottom: "8px", color: "#1a3a2a" }}>
+              Where is your garden?
+            </h2>
+            <p style={{ color: "#666", marginBottom: "24px" }}>We'll find the birds local to your area</p>
+
+            <input
+              type="text"
+              placeholder="Enter your zip code"
+              value={zipCode}
+              onChange={(e) => setZipCode(e.target.value)}
+              maxLength={5}
+              style={{
+                width: "100%", padding: "14px 16px", borderRadius: "12px",
+                border: "2px solid #d1fae5", fontSize: "16px", marginBottom: "12px",
+                boxSizing: "border-box", outline: "none",
+              }}
+            />
+
+            <select
+              value={yardSize}
+              onChange={(e) => setYardSize(e.target.value)}
+              style={{
+                width: "100%", padding: "14px 16px", borderRadius: "12px",
+                border: "2px solid #d1fae5", fontSize: "16px", marginBottom: "20px",
+                boxSizing: "border-box", outline: "none", backgroundColor: "white",
+              }}
+            >
+              <option value="">-- Select yard size --</option>
+              <option value="small (under 500 sq ft)">Small (under 500 sq ft)</option>
+              <option value="medium (500-2000 sq ft)">Medium (500–2000 sq ft)</option>
+              <option value="large (over 2000 sq ft)">Large (over 2000 sq ft)</option>
+            </select>
+
+            <button
+              onClick={handleLocationSubmit}
+              disabled={!zipCode || !yardSize}
+              style={{
+                width: "100%", padding: "14px", borderRadius: "12px",
+                backgroundColor: zipCode && yardSize ? "#2d8a4e" : "#ccc",
+                color: "white", border: "none", fontSize: "16px", fontWeight: "600",
+                cursor: zipCode && yardSize ? "pointer" : "not-allowed",
+                transition: "all 0.2s ease",
+              }}
+            >
+              Find My Local Birds 🐦
+            </button>
+          </div>
+        )}
+
+        {/* Step 2 */}
+        {step === 2 && (
+          <div>
+            <div style={{ textAlign: "center", marginBottom: "32px" }}>
+              <h2 style={{ fontSize: "24px", fontWeight: "600", color: "#1a3a2a", marginBottom: "6px" }}>
+                Choose a bird to rescue
+              </h2>
+              <p style={{ color: "#666" }}>Local birds in the <strong>{selectedRegion}</strong> — pick one to build a garden for</p>
+            </div>
+
+            {loadingPhotos ? (
+              <p style={{ textAlign: "center", color: "#888", fontSize: "16px" }}>Loading local birds... 🐦</p>
+            ) : (
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: "20px" }}>
+                {regionBirds[selectedRegion].map((bird) => (
+                  <BirdCard
+                    key={bird.name}
+                    bird={bird}
+                    photo={photos[bird.name]}
+                    onSelect={handleBirdSelect}
+                    selected={selectedBird?.name === bird.name}
+                  />
                 ))}
-              </select>
+              </div>
+            )}
+
+            <div style={{ textAlign: "center", marginTop: "24px" }}>
+              <button onClick={() => setStep(1)} style={{ background: "none", border: "none", color: "#888", cursor: "pointer", fontSize: "14px" }}>
+                ← Change location
+              </button>
             </div>
           </div>
         )}
 
-        {/* Results */}
-        {stateData && (
-          <div className="fade-in-up">
-            <div className="text-center mb-8">
-              <h2 className="text-3xl font-semibold text-green-900" style={{fontFamily: "Playfair Display, serif"}}>
-                🗺️ {chosenState}
+        {/* Step 3 */}
+        {step === 3 && (
+          <div>
+            <div style={{ textAlign: "center", marginBottom: "32px" }}>
+              <h2 style={{ fontSize: "24px", fontWeight: "600", color: "#1a3a2a", marginBottom: "6px" }}>
+                🌿 Your Garden Blueprint
               </h2>
-              <p className="text-gray-500 mt-1">Here's what works best for birds in your area</p>
+              <p style={{ color: "#666" }}>Personalized for the <strong>{selectedBird?.name}</strong> in your {yardSize} yard</p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-
-              {/* Birds card */}
-              <div className="card-hover bg-white rounded-2xl shadow-md overflow-hidden border border-green-100">
-                <div className="bg-gradient-to-r from-green-500 to-emerald-500 px-6 py-4">
-                  <h3 className="text-white font-bold text-lg">🐦 Common Birds</h3>
-                  <p className="text-green-100 text-xs mt-1">Species you'll likely see</p>
-                </div>
-                <div className="p-6">
-                  <ul className="space-y-3">
-                    {stateData.birds.map((bird) => (
-                      <li key={bird} className="flex items-center gap-3">
-                        <span className="text-green-500 text-lg">•</span>
-                        <span className="text-gray-700 text-sm font-medium">{bird}</span>
-                      </li>
-                    ))}
-                  </ul>
+            {loadingBlueprint ? (
+              <div style={{ textAlign: "center", padding: "60px" }}>
+                <div style={{ fontSize: "48px", marginBottom: "16px" }}>🌱</div>
+                <p style={{ fontSize: "18px", fontWeight: "500", color: "#1a3a2a" }}>Building your garden blueprint...</p>
+                <p style={{ color: "#888", marginTop: "8px" }}>Analyzing local plants and wildlife</p>
+                <div style={{ marginTop: "20px", display: "flex", justifyContent: "center", gap: "8px" }}>
+                  {["🌿", "🐛", "🌸", "🦋", "🌳"].map((emoji, i) => (
+                    <span key={i} style={{ fontSize: "24px", display: "inline-block", animation: `bounce 0.6s ${i * 0.1}s infinite alternate` }}>{emoji}</span>
+                  ))}
                 </div>
               </div>
+            ) : (
+              <div>
+                <style>{`
+                  @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+                  .blueprint-card { animation: fadeIn 0.5s ease forwards; opacity: 0; }
+                `}</style>
 
-              {/* Feeders card */}
-              <div className="card-hover bg-white rounded-2xl shadow-md overflow-hidden border border-amber-100">
-                <div className="bg-gradient-to-r from-amber-500 to-orange-500 px-6 py-4">
-                  <h3 className="text-white font-bold text-lg">🪣 Best Feeders</h3>
-                  <p className="text-amber-100 text-xs mt-1">Feeders that attract the most birds</p>
-                </div>
-                <div className="p-6">
-                  <ul className="space-y-3">
-                    {stateData.feeders.map((feeder) => (
-                      <li key={feeder} className="flex items-center gap-3">
-                        <span className="text-amber-500 text-lg">•</span>
-                        <span className="text-gray-700 text-sm font-medium">{feeder}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                {blueprint.split("\n\n").filter(Boolean).map((section, i) => {
+                  const lines = section.trim().split("\n").filter(Boolean);
+                  const title = lines[0];
+                  const content = lines.slice(1);
+
+                  const sectionStyles = {
+                    "🌱": { bg: "#f0faf0", border: "#2d8a4e", color: "#1a5c2e" },
+                    "🐛": { bg: "#fff8f0", border: "#e67e22", color: "#7a3e0a" },
+                    "📅": { bg: "#f0f4ff", border: "#3498db", color: "#0a2e7a" },
+                    "⚠️": { bg: "#fff5f5", border: "#e74c3c", color: "#7a0a0a" },
+                    "💚": { bg: "#f5fff5", border: "#27ae60", color: "#0a5c2e" },
+                  };
+
+                  const matchedKey = Object.keys(sectionStyles).find(k => title?.includes(k));
+                  const style = sectionStyles[matchedKey] || { bg: "#f9f9f9", border: "#ccc", color: "#333" };
+
+                  return (
+                    <div
+                      key={i}
+                      className="blueprint-card"
+                      style={{
+                        backgroundColor: style.bg,
+                        border: `2px solid ${style.border}`,
+                        borderRadius: "16px",
+                        padding: "20px 24px",
+                        marginBottom: "16px",
+                        animationDelay: `${i * 0.15}s`,
+                      }}
+                    >
+                      <h3 style={{ margin: "0 0 12px", fontSize: "16px", fontWeight: "700", color: style.color }}>
+                        {title}
+                      </h3>
+                      <ul style={{ margin: 0, paddingLeft: "20px" }}>
+                        {content.map((line, j) => (
+                          <li key={j} style={{ marginBottom: "8px", lineHeight: "1.7", fontSize: "14px", color: "#444" }}>
+                            {line.replace(/^[-•*]\s*/, "")}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  );
+                })}
               </div>
+            )}
 
-              {/* Foods card */}
-              <div className="card-hover bg-white rounded-2xl shadow-md overflow-hidden border border-blue-100">
-                <div className="bg-gradient-to-r from-blue-500 to-cyan-500 px-6 py-4">
-                  <h3 className="text-white font-bold text-lg">🌻 Best Foods</h3>
-                  <p className="text-blue-100 text-xs mt-1">Foods birds love most</p>
-                </div>
-                <div className="p-6">
-                  <ul className="space-y-3">
-                    {stateData.foods.map((food) => (
-                      <li key={food} className="flex items-center gap-3">
-                        <span className="text-blue-500 text-lg">•</span>
-                        <span className="text-gray-700 text-sm font-medium">{food}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-
-            </div>
-
-            {/* Garden builder CTA */}
-            <div className="text-center bg-gradient-to-br from-green-800 to-emerald-700 rounded-3xl p-10 text-white shadow-xl">
-              <div className="text-5xl mb-4">🌿</div>
-              <h3 className="text-2xl font-bold mb-2" style={{fontFamily: "Playfair Display, serif"}}>
-                Want to go deeper?
-              </h3>
-              <p className="text-green-100 mb-6 max-w-md mx-auto">
-                Use our AI-powered Bird Rescue Garden Builder to get a personalized
-                garden plan that saves local birds
-              </p>
+            <div style={{ textAlign: "center", marginTop: "32px", display: "flex", gap: "12px", justifyContent: "center", flexWrap: "wrap" }}>
+              <button
+                onClick={() => { setStep(2); setBlueprint(""); setSelectedBird(null); }}
+                style={{ background: "none", border: "2px solid #ccc", padding: "12px 24px", borderRadius: "12px", cursor: "pointer", fontSize: "14px", fontWeight: "500" }}
+              >
+                ← Choose different bird
+              </button>
+              <button
+                onClick={() => window.print()}
+                style={{ backgroundColor: "#2d8a4e", color: "white", border: "none", padding: "12px 24px", borderRadius: "12px", cursor: "pointer", fontSize: "14px", fontWeight: "500" }}
+              >
+                🖨️ Print Blueprint
+              </button>
               <a
-                href="/garden"
+               href="/garden"
                 className="inline-block bg-white text-green-800 font-bold px-8 py-4 rounded-2xl shadow-lg hover:shadow-xl transition-all hover:scale-105"
               >
                 🌱 Build My Bird Garden →
@@ -227,10 +374,10 @@ export default function Home() {
         )}
       </div>
 
-      {/* Footer */}
-      <footer className="text-center py-8 text-gray-400 text-sm">
-        <p>🪺 The Backyard Biome — helping birds one garden at a time</p>
+      <footer style={{ textAlign: "center", padding: "32px", color: "#999", fontSize: "13px", borderTop: "1px solid #eee", marginTop: "40px" }}>
+        🪺 The Backyard Biome — helping birds one garden at a time
       </footer>
     </main>
   );
 }
+
