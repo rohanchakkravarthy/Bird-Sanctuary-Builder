@@ -2,8 +2,8 @@ import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 
 export const metadata = {
-  title: "The Backyard Biome",
-  description: "Find the best bird feeders for your region",
+  title: "Bird Sanctuary Builder",
+  description: "Helping birds one garden at a time",
 };
 
 export default function RootLayout({ children }) {
