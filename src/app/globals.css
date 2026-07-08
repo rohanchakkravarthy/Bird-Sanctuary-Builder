@@ -64,3 +64,11 @@ body::before {
   backdrop-filter: blur(6px);
   z-index: -1;
 }
+
+.nature-bg {
+  background-image: linear-gradient(rgba(255,255,255,0.92), rgba(255,255,255,0.92)),
+    url('https://images.unsplash.com/photo-1444464666168-49d633b86797?w=1920&q=80');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
