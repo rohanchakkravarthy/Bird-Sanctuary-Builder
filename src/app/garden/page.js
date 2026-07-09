@@ -96,21 +96,62 @@ export default function GardenBuilder() {
   const [loadingPhotos, setLoadingPhotos] = useState(false);
   const [blueprint, setBlueprint] = useState("");
   const [loadingBlueprint, setLoadingBlueprint] = useState(false);
+  const [detectedState, setDetectedState] = useState("");
 
-  const zipToRegion = (zip) => {
-    const num = parseInt(zip);
-    if (num >= 10000 && num <= 19999) return "Northeast";
-    if (num >= 20000 && num <= 29999) return "Southeast";
-    if (num >= 30000 && num <= 39999) return "Southeast";
-    if (num >= 40000 && num <= 49999) return "Midwest";
-    if (num >= 50000 && num <= 59999) return "Midwest";
-    if (num >= 60000 && num <= 69999) return "Midwest";
-    if (num >= 70000 && num <= 79999) return "Southwest";
-    if (num >= 80000 && num <= 84999) return "Southwest";
-    if (num >= 85000 && num <= 89999) return "Southwest";
-    if (num >= 90000 && num <= 99999) return "West";
-    return "Northeast";
-  };
+  const zipToState = (zip) => {
+  const num = parseInt(zip);
+  if (num >= 35004 && num <= 36925) return { state: "Alabama", region: "Southeast" };
+  if (num >= 99501 && num <= 99950) return { state: "Alaska", region: "West" };
+  if (num >= 85001 && num <= 86556) return { state: "Arizona", region: "Southwest" };
+  if (num >= 71601 && num <= 72959) return { state: "Arkansas", region: "Southeast" };
+  if (num >= 90001 && num <= 96162) return { state: "California", region: "West" };
+  if (num >= 80001 && num <= 81658) return { state: "Colorado", region: "Southwest" };
+  if (num >= 6001 && num <= 6928) return { state: "Connecticut", region: "Northeast" };
+  if (num >= 19701 && num <= 19980) return { state: "Delaware", region: "Southeast" };
+  if (num >= 32004 && num <= 34997) return { state: "Florida", region: "Southeast" };
+  if (num >= 30001 && num <= 31999) return { state: "Georgia", region: "Southeast" };
+  if (num >= 96701 && num <= 96898) return { state: "Hawaii", region: "West" };
+  if (num >= 83201 && num <= 83876) return { state: "Idaho", region: "West" };
+  if (num >= 60001 && num <= 62999) return { state: "Illinois", region: "Midwest" };
+  if (num >= 46001 && num <= 47997) return { state: "Indiana", region: "Midwest" };
+  if (num >= 50001 && num <= 52809) return { state: "Iowa", region: "Midwest" };
+  if (num >= 66002 && num <= 67954) return { state: "Kansas", region: "Midwest" };
+  if (num >= 40003 && num <= 42788) return { state: "Kentucky", region: "Southeast" };
+  if (num >= 70001 && num <= 71497) return { state: "Louisiana", region: "Southeast" };
+  if (num >= 3901 && num <= 4992) return { state: "Maine", region: "Northeast" };
+  if (num >= 20601 && num <= 21930) return { state: "Maryland", region: "Southeast" };
+  if (num >= 1001 && num <= 2791) return { state: "Massachusetts", region: "Northeast" };
+  if (num >= 48001 && num <= 49971) return { state: "Michigan", region: "Midwest" };
+  if (num >= 55001 && num <= 56763) return { state: "Minnesota", region: "Midwest" };
+  if (num >= 38601 && num <= 39776) return { state: "Mississippi", region: "Southeast" };
+  if (num >= 63001 && num <= 65899) return { state: "Missouri", region: "Midwest" };
+  if (num >= 59001 && num <= 59937) return { state: "Montana", region: "West" };
+  if (num >= 68001 && num <= 69367) return { state: "Nebraska", region: "Midwest" };
+  if (num >= 88901 && num <= 89883) return { state: "Nevada", region: "Southwest" };
+  if (num >= 3031 && num <= 3897) return { state: "New Hampshire", region: "Northeast" };
+  if (num >= 7001 && num <= 8989) return { state: "New Jersey", region: "Northeast" };
+  if (num >= 87001 && num <= 88441) return { state: "New Mexico", region: "Southwest" };
+  if (num >= 10001 && num <= 14975) return { state: "New York", region: "Northeast" };
+  if (num >= 27006 && num <= 28909) return { state: "North Carolina", region: "Southeast" };
+  if (num >= 58001 && num <= 58856) return { state: "North Dakota", region: "Midwest" };
+  if (num >= 43001 && num <= 45999) return { state: "Ohio", region: "Midwest" };
+  if (num >= 73001 && num <= 74966) return { state: "Oklahoma", region: "Southwest" };
+  if (num >= 97001 && num <= 97920) return { state: "Oregon", region: "West" };
+  if (num >= 15001 && num <= 19640) return { state: "Pennsylvania", region: "Northeast" };
+  if (num >= 2801 && num <= 2940) return { state: "Rhode Island", region: "Northeast" };
+  if (num >= 29001 && num <= 29948) return { state: "South Carolina", region: "Southeast" };
+  if (num >= 57001 && num <= 57799) return { state: "South Dakota", region: "Midwest" };
+  if (num >= 37010 && num <= 38589) return { state: "Tennessee", region: "Southeast" };
+  if (num >= 73301 && num <= 79999) return { state: "Texas", region: "Southwest" };
+  if (num >= 84001 && num <= 84784) return { state: "Utah", region: "Southwest" };
+  if (num >= 5001 && num <= 5907) return { state: "Vermont", region: "Northeast" };
+  if (num >= 20101 && num <= 24658) return { state: "Virginia", region: "Southeast" };
+  if (num >= 98001 && num <= 99403) return { state: "Washington", region: "West" };
+  if (num >= 24701 && num <= 26886) return { state: "West Virginia", region: "Southeast" };
+  if (num >= 53001 && num <= 54990) return { state: "Wisconsin", region: "Midwest" };
+  if (num >= 82001 && num <= 83128) return { state: "Wyoming", region: "West" };
+  return { state: "Unknown", region: "Northeast" };
+};
 
   const fetchPhotos = async (birds) => {
     setLoadingPhotos(true);
@@ -133,12 +174,13 @@ export default function GardenBuilder() {
   };
 
   const handleLocationSubmit = async () => {
-    if (!zipCode || !yardSize) return;
-    const region = zipToRegion(zipCode);
-    setSelectedRegion(region);
-    await fetchPhotos(regionBirds[region]);
-    setStep(2);
-  };
+  if (!zipCode || zipCode.length < 5 || !yardSize) return;
+  const { state, region } = zipToState(zipCode);
+  setSelectedRegion(region);
+  setDetectedState(state);
+  await fetchPhotos(regionBirds[region]);
+  setStep(2);
+};
 
   const handleBirdSelect = async (bird) => {
     setSelectedBird(bird);
@@ -202,9 +244,11 @@ export default function GardenBuilder() {
             <input
               type="text"
               placeholder="Enter your zip code"
-              value={zipCode}
-              onChange={(e) => setZipCode(e.target.value)}
-              maxLength={5}
+               value={zipCode}
+              onChange={(e) => setZipCode(e.target.value.replace(/\D/g, ""))}
+  maxLength={5}
+  inputMode="numeric"
+  pattern="[0-9]*"
               style={{
                 width: "100%", padding: "14px 16px", borderRadius: "12px",
                 border: "2px solid #d1fae5", fontSize: "16px", marginBottom: "12px",
@@ -229,10 +273,10 @@ export default function GardenBuilder() {
 
             <button
               onClick={handleLocationSubmit}
-              disabled={!zipCode || !yardSize}
+              disabled={zipCode.length !== 5 || !yardSize}
               style={{
                 width: "100%", padding: "14px", borderRadius: "12px",
-                backgroundColor: zipCode && yardSize ? "#2d8a4e" : "#ccc",
+                backgroundColor: zipCode.length === 5 && yardSize ? "#2d8a4e" : "#ccc",
                 color: "white", border: "none", fontSize: "16px", fontWeight: "600",
                 cursor: zipCode && yardSize ? "pointer" : "not-allowed",
                 transition: "all 0.2s ease",
@@ -250,7 +294,7 @@ export default function GardenBuilder() {
               <h2 style={{ fontSize: "24px", fontWeight: "600", color: "#1a3a2a", marginBottom: "6px" }}>
                 Choose a bird to rescue
               </h2>
-              <p style={{ color: "#666" }}>Local birds in the <strong>{selectedRegion}</strong> — pick one to build a garden for</p>
+              <p style={{ color: "#666" }}>Local birds for <strong>{detectedState} — {selectedRegion} Region</strong></p>
             </div>
 
             {loadingPhotos ? (
