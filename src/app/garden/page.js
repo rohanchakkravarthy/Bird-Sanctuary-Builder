@@ -260,7 +260,15 @@ export default function GardenBuilder() {
                 type="text"
                 placeholder="Enter your 5-digit zip code"
                 value={zipCode}
-                onChange={(e) => setZipCode(e.target.value.replace(/\D/g, "").slice(0, 5))}
+                onChange={(e) => {
+                 const val = e.target.value.replace(/[^0-9]/g, "");
+                 setZipCode(val.slice(0, 5));
+                }}
+                onKeyDown={(e) => {
+                  if (!/[0-9]/.test(e.key) && !["Backspace", "Delete", "ArrowLeft", "ArrowRight", "Tab"].includes(e.key)) {
+                    e.preventDefault();
+                  }
+                }}
                 inputMode="numeric"
                 pattern="[0-9]*"
                 style={{
