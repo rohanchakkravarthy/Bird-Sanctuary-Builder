@@ -2,7 +2,7 @@ import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 
 export const metadata = {
-  title: "Bird Sanctuary Builder",
+  title: "Avispora",
   description: "Helping birds one garden at a time",
 };
 

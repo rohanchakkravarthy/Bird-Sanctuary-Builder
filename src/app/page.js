@@ -165,7 +165,7 @@ export default function GardenBuilder() {
       <div style={{ background: "linear-gradient(135deg, #1a5c2e, #2d8a4e)", color: "white", padding: "60px 20px", textAlign: "center" }}>
         <div style={{ fontSize: "56px", marginBottom: "12px" }}>🌿</div>
         <h1 style={{ fontSize: "36px", fontWeight: "700", marginBottom: "8px", fontFamily: "Playfair Display, serif" }}>
-          Bird Sanctuary Builder
+          Avispora
         </h1>
         <p style={{ fontSize: "16px", color: "#a7f3d0", maxWidth: "500px", margin: "0 auto" }}>
           Get a personalized garden plan that attracts and protects local birds
@@ -371,7 +371,7 @@ export default function GardenBuilder() {
       </div>
 
       <footer style={{ textAlign: "center", padding: "32px", color: "#999", fontSize: "13px", borderTop: "1px solid #eee", marginTop: "40px" }}>
-        🪺 Bird Sanctuary Builder — helping birds one garden at a time
+        Avispora — helping birds one garden at a time
       </footer>
     </main>
   );
